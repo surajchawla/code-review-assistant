@@ -54,7 +54,7 @@ This platform is designed for **high‑scale engineering organizations** that wa
 flowchart LR
     subgraph GitHub ["GitHub"]
         A1[Pull Request Event]
-        A2[GitHub API (Diff / Files / Comments)]
+        A2[GitHub API (Diff  Files  Comments)]
     end
 
     subgraph WebhookService ["Webhook Service"]
