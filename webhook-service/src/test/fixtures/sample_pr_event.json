@@ -1,0 +1,22 @@
+{
+  "action": "opened",
+  "number": 42,
+  "pull_request": {
+    "head": {
+      "sha": "abc123",
+      "ref": "feature/my-branch"
+    },
+    "base": {
+      "repo": {
+        "name": "my-repo",
+        "owner": { "login": "suraj" }
+      }
+    },
+    "user": { "login": "suraj" }
+  },
+  "repository": {
+    "name": "my-repo",
+    "owner": { "login": "suraj" }
+  },
+  "sender": { "login": "suraj" }
+}
