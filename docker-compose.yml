@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "9092:9092"
+
+  webhook-service:
+    build: ./webhook-service
+    container_name: webhook-service
+    depends_on:
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      GITHUB_WEBHOOK_SECRET: your-webhook-secret
+      PR_EVENTS_TOPIC: pr-events
+    ports:
+      - "8081:8080"
+
+  review-orchestrator-service:
+    build: ./review-orchestrator
+    container_name: review-orchestrator-service
+    depends_on:
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      PR_EVENTS_TOPIC: pr-events
+      CODE_FETCH_REQUESTS_TOPIC: code-fetch-requests
+    ports:
+      - "8082:8080"
